@@ -29,12 +29,29 @@ const password = document.getElementById('password');
 const confirm_password = document.getElementById('confirm-password');
 const error_msg2 = document.getElementsByClassName('input-error')[2];
 const error_msg3 = document.getElementsByClassName('input-error')[3];
-// Regex to check for at least one digit, one uppercase, one lowercase, and one special character
-const passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()<>,.:;|{}[\]"'/?]).{8,}$/;
 
-const isValidPassword = (passwordValue) => {
-    return passwordRegex.test(passwordValue);
-}
+//password error reasons
+const validatePassword = (passwordValue) => {
+    const errors = [];
+    
+    if (passwordValue.length < 8) {
+        errors.push("Password must be at least 8 characters long");
+    }
+    if (!/[A-Z]/.test(passwordValue)) {
+        errors.push("Password must contain at least one uppercase letter");
+    }
+    if (!/[a-z]/.test(passwordValue)) {
+        errors.push("Password must contain at least one lowercase letter");
+    }
+    if (!/\d/.test(passwordValue)) {
+        errors.push("Password must contain at least one numeral");
+    }
+    if (!/[!@#$%^&*()<>,.:;|{}[\]"'/?]/.test(passwordValue)) {
+        errors.push("Password must contain at least one special character");
+    }
+
+    return errors; 
+};
 
 // Password confirmation
 const isPasswordConfirmed = (password, confirmpassword) => {
@@ -93,19 +110,22 @@ btn.addEventListener('click', (e) => {
     }
 
     // Password
-    const user_password = isValidPassword(password.value);
-    const user_confirm_password = isPasswordConfirmed(password.value, confirm_password.value);
-    
-    if (!user_password) {
-        error_msg2.textContent = "Password is invalid";
-        isValid = false;
+    error_msg2.textContent = '';
+    // const user_password = validatePassword(password.value);
+    const passwordErrors = validatePassword(password.value);
+    if(passwordErrors.length > 0){
+        error_msg2.textContent = passwordErrors.join(' ' + "&" + ' ');
+    } else {
+        console.log('Password is valid');
     }
 
     // Confirmatin of password
+    const user_confirm_password = isPasswordConfirmed(password.value, confirm_password.value);
     if (!user_confirm_password) {
         error_msg3.textContent = "Passwords do not match"; // Show error message for confirmation
         isValid = false;
     }
+
 
     // Email
     const user_email = emailValidation(email.value);
