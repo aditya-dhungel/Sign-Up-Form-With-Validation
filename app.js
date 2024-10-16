@@ -115,6 +115,7 @@ btn.addEventListener('click', (e) => {
     const passwordErrors = validatePassword(password.value);
     if(passwordErrors.length > 0){
         error_msg2.textContent = passwordErrors.join(' ' + "&" + ' ');
+        isValid = false;
     } else {
         console.log('Password is valid');
     }
